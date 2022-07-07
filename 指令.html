@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app">
+      <div>{{num}}</div>
+      <div>
+        <button @click="num++">点击</button>
+      </div>
+      <div>
+        <button @click="handle1(11,22,$event)">点击1</button>
+        <button @click="handle2">点击2</button>
+        <!-- 1.如果事件直接绑定函数名称,那么默认会传递事件对象作为事件函数的参数,例如事件2
+            2.如果事件绑定函数调用,那么事件对象必须作为最后一个参数显式传递,事件对象的名称必须是$event,例如事件1 -->
+
+        <!-- .stop 阻止冒泡
+            .prevent 阻止默认行为
+        keyup.enter.esc.delete  = 'function' 等按键修饰符
+        甚至能够自定义按键 Vue.config.keyCodes.xx = xx/xxx -->
+      </div>
+    </div>
+
+    <script>
+      var vm = new Vue({
+        el: "#app",
+        data: {
+          num: 0,
+        },
+        methods: {
+          handle1: function (c, d, f) {
+            console.log(c, d);
+            this.num++, console.log(f.target);
+          },
+          handle2: function (event) {
+            console.log(event.target);
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

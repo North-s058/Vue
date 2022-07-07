@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <div v-if="score>=90">优秀</div>
+        <div v-else-if="score>=80&&score<90">良好</div>
+        <div v-else-if="score>=60">及格</div>
+        <div v-else>b及格</div>
+
+        <div v-show="flag">test</div>
+
+        <!-- 循环 -->
+        <div>水果列表</div>
+        <ul>
+            <li v-for="item in fruits">{{item}}</li>
+            <li v-for="(item,index) in fruits">{{item + '----' + index}}</li>
+            <li :key='index'v-for="(item,index) in myFruits">
+                <!-- key的作用 用来帮助vue区分不同的元素,提高性能 item.id -->
+                <span>{{item.ename}}</span>
+                <span>{{item.cname}}</span>
+                <span>{{item.cnme}}</span>
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        var vm = new Vue({
+            el:'#app',
+            data:{
+                score:90,
+                flag:1,
+                fruits:['apple','orange','banana'],
+                myFruits:[{
+                    ename:'apple',
+                    cname:'苹果'
+                },{
+                    ename:'apple',
+                    cname:'苹果'
+                },{
+                    ename:'apple',
+                    cname:'苹果'
+                },]
+            },
+            methods:{}
+        })
+    </script>
+</body>
+</html>

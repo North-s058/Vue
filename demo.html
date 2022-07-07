@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <!-- 发现3.x版本script连接用不了 -->
+    <title>Document</title>
+</head>
+<body>
+    <div id="app" >
+        {{msg}}
+        {{1+5}}
+        <div v-text = 'msg'></div>
+        <!-- 比插值表达式更简洁 -->
+        <div v-html = 'msg1'></div>
+        <!-- 有安全隐患,只能对内部数据使用 -->
+        <div v-pre>{{msg}}</div>   
+        <!-- 不编译 -->
+        <div v-once>{{msg2}}</div>
+        <!-- 显示的信息后面不需要修改,可提高性能 -->
+        <input type="text" v-model = 'msg'>
+    </div>
+    <script>
+        var demo = new Vue({
+            el:'#app',
+            data:{
+                msg:'hello vue',
+                msg1:'<h1>hello!</h1>',
+                msg2:'听说只有一次噢'
+
+            }
+        })
+    </script>
+ <!-- 响应式:数据变化导致页面内容变化
+ v-once:仅使用一次就不在编译 -->
+</body>
+
+</html>
