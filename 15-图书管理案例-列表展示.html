@@ -1,86 +1,203 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Document</title>
-  <style type="text/css">
-    .grid {
-      margin: auto;
-      width: 500px;
-      text-align: center;
-    }
-    .grid table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    .grid th,td {
-      padding: 10;
-      border: 1px dashed orange;
-      height: 35px;
-      line-height: 35px;
-    }
-    .grid th {
-      background-color: orange;
-    }
-  </style>
-</head>
-<body>
-  <div id="app">
-    <div class="grid">
-      <table>
-        <thead>
-          <tr>
-            <th>编号</th>
-            <th>名称</th>
-            <th>时间</th>
-            <th>操作</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr :key='item.id' v-for='item in books'>
-            <td>{{item.id}}</td>
-            <td>{{item.name}}</td>
-            <td>{{item.date}}</td>
-            <td>
-              <a href="" @click.prevent>修改</a>
-              <span>|</span>
-              <a href="" @click.prevent>删除</a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <style type="text/css">
+      .grid .total{
+        height: 30px;
+        line-height: 30px;
+        background-color: orange;
+        border-top: 1px solid orange;
+      }
+      .grid {
+        margin: auto;
+        width: 500px;
+        text-align: center;
+      }
+      .grid table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .grid th,
+      td {
+        padding: 10;
+        border: 1px dashed orange;
+        height: 35px;
+        line-height: 35px;
+      }
+      .grid th {
+        background-color: orange;
+      }
+      .grid .book {
+        background-color: orange;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app" v-cloak>
+      <div class="grid">
+        <div>
+          <h1>图书管理</h1>
+          <div class="book">
+            <div>
+              <label for="id"> 编号: </label>
+              <input type="text" v-focus id="id" v-model="id" :disabled="flag" />
+              <label for="name"> 名称 </label>
+              <input
+                type="text"
+                @keyup.enter="handle"
+                id="name"
+                v-model="name"
+              />
+              <button @click="handle" :disabled="submitF">提交</button>
+            </div>
+          </div>
+        </div>
+        <div class="total">
+          <span>图书总数:</span>
+          <span>{{total}}</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>编号</th>
+              <th>名称</th>
+              <th>时间</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr :key="item.id" v-for="item in books">
+              <td>{{item.id}}</td>
+              <td>{{item.name}}</td>
+              <td>{{item.date}}</td>
+              <td>
+                <a href="" @click.prevent="edit(item.id)">修改</a>
+                <span>|</span>
+                <a href="" @click.prevent="deleteBook(item.id)">删除</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-  </div>
-  <script type="text/javascript" src="js/vue.js"></script>
-  <script type="text/javascript">
-    /*
+    <script type="text/javascript" src="js/vue.js"></script>
+    <script type="text/javascript">
+      /*
       图书管理-图书列表展示功能
       注意事项：<a href="" @click.prevent>修改</a>
       事件绑定时，可以只添加修饰符，而不绑定事件函数
-    */
-    var vm = new Vue({
-      el: '#app',
-      data: {
-        books: [{
-          id: 1,
-          name: '三国演义',
-          date: ''
-        },{
-          id: 2,
-          name: '水浒传',
-          date: ''
-        },{
-          id: 3,
-          name: '红楼梦',
-          date: ''
-        },{
-          id: 4,
-          name: '西游记',
-          date: ''
-        }]
-      }
-    });
-  </script>
-</body>
+    */ Vue.directive("focus", {
+        inserted: function (el) {
+          el.focus();
+        },
+      });
+      var vm = new Vue({
+        el: "#app",
+        data: {
+          submitF:false,
+          flag: false,
+          id: "",
+          name: "",
+          books: [
+         
+          ],
+        },
+        watch:{
+          name:function(val){
+            var flag = this.books.some((item)=>{
+              return item.name == val
+            })
+            if(flag){
+              this.submitF = true
+            }else{
+              this.submitF = false
+            }
+          }
+        },
+        filters: {
+          format: function (val, arg) {
+            if (arg == "yyyy-MM-dd") {
+              var ret = "";
+              ret +=
+                val.getFullYear() +
+                "-" +
+                (val.getMonth() + 1) +
+                "-" +
+                val.getDate();
+              return ret;
+            }
+          },
+        },
+        computed:{
+          total:function(){
+            return this.books.length
+          }
+        },
+        methods: {
+          handle: function () {
+            if (this.flag) {
+              this.books.some((item) => {
+                if (item.id == this.id) {
+                  item.name = this.name;
+                  //完成更新操作后终止循环
+                  return true;
+                }
+              });
+              this.flag = false;
+            } else {
+              var book = {};
+              book.id = this.id;
+              book.name = this.name;
+              book.date = "";
+              this.books.push(book);
+            }
+            this.id = "";
+            this.name = "";
+          },
+          edit: function (id) {
+            this.flag = true;
+            var book = this.books.filter(function (item) {
+              return item.id == id;
+            });
+            //把获取到的信息填充到表单
+            this.id = book[0].id;
+            this.name = book[0].name;
+          },
+          deleteBook: function (id) {
+            var index = this.books.findIndex(function (item) {
+              return item.id == id;
+            });
+            this.books.splice(index, 1);
+          },
+        },
+        mounted:function(){
+          var data = [
+          {
+              id: 1,
+              name: "三国演义",
+              date: "2525609975000",
+            },
+            {
+              id: 2,
+              name: "水浒传",
+              date: "2525609975000",
+            },
+            {
+              id: 3,
+              name: "红楼梦",
+              date: "2525609975000",
+            },
+            {
+              id: 4,
+              name: "西游记",
+              date: "2525609975000",
+            },
+          ]
+          this.books =  data
+        }
+      });
+    </script>
+  </body>
 </html>
